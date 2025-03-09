@@ -3,29 +3,39 @@
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '@/contracts/config';
 import { parseEther } from 'viem';
 import { useEffect, useState } from 'react';
-import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 
 export const useNFTicket = () => {
   const { address } = useAccount();
   const [isOrganizer, setIsOrganizer] = useState(false);
-  const { writeContract } = useWriteContract();
+  const [isLoading, setIsLoading] = useState(false);
+  const { writeContract, data: hash } = useWriteContract();
+  const { isSuccess } = useWaitForTransactionReceipt({ hash });
 
   // Check if user is an organizer
-  const { data: organizerData } = useReadContract({
+  const { data: organizerData, refetch } = useReadContract({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'organizers',
     args: [address as `0x${string}`],
+    query: {
+      enabled: !!address,
+    },
   });
 
-  const registerAsOrganizer = (name: string) => {
-    writeContract({
-      address: CONTRACT_ADDRESS,
-      abi: CONTRACT_ABI,
-      functionName: 'registerOrganizer',
-      args: [name],
-      value: parseEther('0.001'),
-    });
+  const registerAsOrganizer = async (name: string) => {
+    try {
+      setIsLoading(true);
+      await writeContract({
+        address: CONTRACT_ADDRESS,
+        abi: CONTRACT_ABI,
+        functionName: 'registerOrganizer',
+        args: [name],
+        value: parseEther('0.001'),
+      });
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
   };
 
   const mintBatch = (count: number) => {
@@ -73,6 +83,13 @@ export const useNFTicket = () => {
   });
 
   useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      setIsLoading(false);
+    }
+  }, [isSuccess, refetch]);
+
+  useEffect(() => {
     if (organizerData) {
       setIsOrganizer(organizerData[4]); // boolean is the 5th element in tuple
     }
@@ -80,6 +97,7 @@ export const useNFTicket = () => {
 
   return {
     isOrganizer,
+    isLoading,
     registerAsOrganizer,
     mintBatch,
     listBatchForSale,

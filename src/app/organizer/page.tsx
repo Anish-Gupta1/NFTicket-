@@ -1,55 +1,46 @@
 'use client';
 
 import { useNFTicket } from '@/lib/hooks/useNFTicket';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
 import { useAccount } from 'wagmi';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function OrganizerPage() {
   const { address } = useAccount();
-  const { isOrganizer, registerAsOrganizer, mintBatch, listBatchForSale } = useNFTicket();
+  const { isOrganizer, registerAsOrganizer, isLoading } = useNFTicket();
   const [name, setName] = useState('');
-  const [count, setCount] = useState(1);
-  const [price, setPrice] = useState('');
-  const [batchNum, setBatchNum] = useState(1);
 
   if (!address) {
     return (
-      <div className="flex items-center justify-center min-h-[80vh]">
-        <h1 className="text-2xl font-semibold">Please connect your wallet to continue</h1>
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <h1 className="text-2xl font-bold mb-4">Please connect your wallet</h1>
       </div>
     );
   }
 
   if (!isOrganizer) {
     return (
-      <div className="max-w-lg mx-auto p-6 mt-10">
-        <h1 className="text-3xl font-bold mb-6">Register as Organizer</h1>
-        <p className="text-gray-600 mb-6">
-          To become an organizer, you need to stake 0.001 ETH and provide your organization name.
-        </p>
-        
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Organization Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter your organization name"
-            />
-          </div>
-          
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <h1 className="text-2xl font-bold mb-4">Register as Organizer</h1>
+        <p className="mb-4 text-gray-600">Registration requires a 0.001 ETH deposit</p>
+        <div className="flex gap-4">
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={isLoading}
+          />
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => registerAsOrganizer(name)}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50"
+            disabled={isLoading || !name}
           >
-            Register (0.001 ETH)
+            {isLoading ? 'Registering...' : 'Register'}
           </motion.button>
         </div>
       </div>
@@ -57,76 +48,20 @@ export default function OrganizerPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">Organizer Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Mint NFTs */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Mint NFT Tickets</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Number of Tickets
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={count}
-                onChange={(e) => setCount(parseInt(e.target.value))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => mintBatch(count)}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-            >
-              Mint Batch
-            </motion.button>
-          </div>
-        </div>
-
-        {/* List for Sale */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">List Tickets for Sale</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Batch Number
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={batchNum}
-                onChange={(e) => setBatchNum(parseInt(e.target.value))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price (ETH)
-              </label>
-              <input
-                type="text"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                placeholder="0.1"
-              />
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => listBatchForSale(batchNum, price)}
-              className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
-            >
-              List for Sale
-            </motion.button>
-          </div>
-        </div>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="flex justify-between items-center w-full max-w-4xl mb-8">
+        <h1 className="text-3xl font-bold">Organizer Dashboard</h1>
+        <Link href="/organizer/create">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            Create New Event
+          </motion.button>
+        </Link>
       </div>
+      {/* Add your event list or other dashboard content here */}
     </div>
   );
 } 
