@@ -1,6 +1,6 @@
 import '@rainbow-me/rainbowkit/styles.css';
-import { Inter } from 'next/font/google';
 import './globals.css';
+import { Inter } from 'next/font/google';
 import Navbar from '../components/layout/Navbar';
 import ClientLayout from '../components/layout/ClientLayout';
 
@@ -21,9 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ClientLayout>
           <Navbar />
-          <main className="pt-16 min-h-screen">
-            {children}
-          </main>
+          <main className="pt-16">{children}</main>
         </ClientLayout>
       </body>
     </html>
