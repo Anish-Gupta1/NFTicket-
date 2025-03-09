@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NFTicket - NFT Event Ticketing Platform
 
-## Getting Started
+NFTicket is a decentralized event ticketing platform built on Ethereum that uses NFTs to represent event tickets. The platform allows event organizers to mint and sell tickets as NFTs, and enables ticket buyers to purchase and resell their tickets in a secure and transparent way.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **For Organizers:**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+  - Register as an organizer by staking ETH
+  - Mint batches of NFT tickets
+  - Set ticket prices and list them for sale
+  - Track sales and revenue
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **For Buyers:**
+  - Browse available tickets
+  - Purchase tickets directly from organizers
+  - View owned tickets in personal collection
+  - Resell tickets in the secondary marketplace
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technology Stack
 
-## Learn More
+- Next.js 14 with TypeScript
+- Wagmi for Ethereum interactions
+- RainbowKit for wallet connections
+- TailwindCSS for styling
+- Framer Motion for animations
+- Ethers.js for blockchain interactions
 
-To learn more about Next.js, take a look at the following resources:
+## Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js 18.0.0 or later
+- npm or yarn
+- MetaMask or any other Web3 wallet
+- Some test ETH on the Sepolia network
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Setup
 
-## Deploy on Vercel
+1. Clone the repository:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   git clone https://github.com/yourusername/nfticket.git
+   cd nfticket
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env.local` file in the root directory and add your WalletConnect project ID:
+
+   ```
+   NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_project_id
+   ```
+
+4. Update the contract address in `src/contracts/config.ts` if needed.
+
+5. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Smart Contract
+
+The smart contract is deployed on the Sepolia testnet. The contract implements:
+
+- ERC1155 token standard for NFT tickets
+- Organizer registration with staking
+- Batch minting of tickets
+- Primary and secondary market sales
+- Royalties for resales
+- Metadata management for pre and post-event
+
+## Usage
+
+1. **For Organizers:**
+
+   - Connect your wallet
+   - Navigate to the Organizer page
+   - Register by staking 0.5 ETH
+   - Mint ticket batches and set prices
+   - Monitor sales and revenue
+
+2. **For Buyers:**
+   - Connect your wallet
+   - Browse available tickets
+   - Purchase tickets
+   - View your collection
+   - List tickets for resale if desired
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
